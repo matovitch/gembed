@@ -53,7 +53,7 @@ int main()
 
     const unsigned steps = 10;
     const float    learn =  0.2;
-    const float    blow  =  3.0;
+    const float    blow  =  1.1;
 
     gembed(g, steps, learn, blow);
 

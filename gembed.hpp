@@ -125,7 +125,7 @@ struct Gembed
                 newScale += dilatation;
                 weight++;
 
-                speed +=  std::log(dilatation * blow / _scale) * 
+                speed +=  (std::log(dilatation / _scale) + blow) * 
                           (_embedding.at(n.first) - e.second);
             }
 
@@ -151,12 +151,12 @@ struct Gembed
 
         for (unsigned i = steps; i > 0; i--)
         {
-            update(graph, learn, 1.0 + i * blow / T(steps));
+            update(graph, learn, i * blow / T(steps));
         }
 
         for (unsigned i = 0; i < steps; i++)
         {
-            update(graph, learn, 1.0);
+            update(graph, learn, 0.0);
         }
     }
 
