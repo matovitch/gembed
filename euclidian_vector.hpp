@@ -3,7 +3,6 @@
 
 #include <array>
 
-#include <iostream>
 
 template <typename T, unsigned N>
 struct EuclidianVector
