@@ -33,7 +33,7 @@ struct WordGraph
         const auto wOEnd = _wordOccurences.end();
         const unsigned wOTotalCount = _wordOccurences._totalCount;
 
-        for (unsigned i = _kernelSize; i < text.size() - _kernelSize; i++)
+        for (int i = _kernelSize; i < text.size() - _kernelSize; i++)
         {
             const Word iWord = text[i];
 
@@ -43,7 +43,7 @@ struct WordGraph
             {
                 const T iWordFreq = iFit->second / T(wOTotalCount);
 
-                for (unsigned j = -kernelSize; j <= kernelSize; j++)
+                for (int j = -kernelSize; j <= kernelSize; j++)
                 {
                     const Word jWord = text[i + j];
 
