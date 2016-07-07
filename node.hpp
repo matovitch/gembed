@@ -61,6 +61,11 @@ struct Node
         weight = functor(weight, args...);
     }
 
+    bool hasNeighnour(const Node<P, W, H>* nodePtr) const
+    {
+        return _neighbourhood.find(nodePtr) != _neighbourhood.end();
+    }
+
     const Neighbourhood& neighbourhood() const { return _neighbourhood; }
 
     const P _point;

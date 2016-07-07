@@ -13,54 +13,73 @@ template <typename P,
           typename H>
 struct Graph
 {
+    static Node<P, W, H>* toNode(const std::size_t id)
+    {
+        return reinterpret_cast<Node<P, W, H>*>(id);
+    }
+
+    static std::size_t toId(const Node<P, W, H>* const node)
+    {
+        return reinterpret_cast<std::size_t>(node);
+    }
+
     Graph() {}
 
     template <typename... Args>
-    std::shared_ptr<Node<P, W, H>> createNode(Args&&... args)
+    std::size_t createNode(Args&&... args)
     {
-        std::shared_ptr<Node<P, W, H>> n(std::make_shared<Node<P, W, H>>(args...));
+        std::unique_ptr<Node<P, W, H>> n(std::make_unique<Node<P, W, H>>(args...));
 
-        _nodes.insert(n);
+        const Node<P, W, H>* const node = &*n;
+
+        _nodes.insert(std::move(n));
         
-        return n;
+        return toId(node);
     }
 
-    void destroyNode(const std::shared_ptr<Node<P, W, H>>& n)
+    void destroyNode(const std::size_t id)
     {
-        _nodes.erase(n);
+        _nodes.erase(toNode(id));
     }
 
-    void removeEdge(const std::shared_ptr<Node<P, W, H>>& lhs,
-                    const std::shared_ptr<Node<P, W, H>>& rhs)
+    void removeEdge(const std::size_t lhs,
+                    const std::size_t rhs)
     {
-        lhs->removeNeighbour(&*rhs);
+        toNode(lhs)->removeNeighbour(toNode(rhs));
     }
 
-    void addEdge(const std::shared_ptr<Node<P, W, H>>& lhs,
-                 const std::shared_ptr<Node<P, W, H>>& rhs,
+    void addEdge(const std::size_t lhs,
+                 const std::size_t rhs,
                  const W weight)
     {
-        lhs->addNeighbour(&*rhs, weight);
+        toNode(lhs)->addNeighbour(toNode(rhs), weight);
     }
 
-    void updateEdge(const std::shared_ptr<Node<P, W, H>>& lhs,
-                    const std::shared_ptr<Node<P, W, H>>& rhs,
+    bool hasEdge(const std::size_t lhs,
+                 const std::size_t rhs) const
+    {
+        return toNode(lhs)->hasNeighbour(toNode(rhs));
+    }
+
+    void updateEdge(const std::size_t lhs,
+                    const std::size_t rhs,
                     const W weight)
     {
-        lhs->updateNeighbour(&*rhs, weight);
+        toNode(lhs)->updateNeighbour(toNode(rhs), weight);
     }
 
     template <typename F, typename... Args>
-    void transformEdge(const std::shared_ptr<Node<P, W, H>>& lhs,
-                       const std::shared_ptr<Node<P, W, H>>& rhs,
+    void transformEdge(const std::size_t lhs,
+                       const std::size_t rhs,
                        const F& functor,
                        Args&&... args)
     {
-        lhs->transformNeighbour(&*rhs, functor, args...);
+        toNode(lhs)->transformNeighbour(toNode(rhs), functor, args...);
     }
 
-    std::unordered_set<std::shared_ptr<Node<P, W, H>>,
-                       NodePtrHasher             <H>> _nodes;
+    std::unordered_set<std::unique_ptr<Node<P, W, H>>,
+                       NodePtrHasher             <H>,
+                       NodePtrEqual>                   _nodes;
 };
 
 #endif // __GRAPH_H__

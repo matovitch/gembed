@@ -32,10 +32,10 @@ int main()
 {
     Graph<Point, float, PointHasher> g;
 
-    auto a = g.createNode('A');
-    auto b = g.createNode('B');
-    auto c = g.createNode('C');
-    auto d = g.createNode('D');
+    std::size_t a = g.createNode('A');
+    std::size_t b = g.createNode('B');
+    std::size_t c = g.createNode('C');
+    std::size_t d = g.createNode('D');
 
     g.addEdge(a, b, 1.0);
     g.addEdge(b, a, 1.0);
@@ -51,7 +51,7 @@ int main()
            float,
            EMBEDDING_DIM> gembed((std::random_device())());
 
-    const unsigned steps = 10;
+    const unsigned steps = 20;
     const float    learn =  0.2;
     const float    blow  =  1.1;
 
