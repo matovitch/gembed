@@ -51,15 +51,19 @@ struct WordGraph
         const auto wOEnd = _wordOccurences.end();
         const unsigned wOTotalCount = _wordOccurences._totalCount;
 
-        for (unsigned i = _kernelSize; i < text.size() - _kernelSize; i++)
+        for (int i = _kernelSize; i < text.size() - _kernelSize; i++)
         {
             const Word iWord = text[i];
 
+            const auto iFit = _wordOccurences.find(iWord);
+
             if (iFit != wOEnd)
             {
-                for (unsigned j = -kernelSize; j <= kernelSize; j++)
+                for (int j = -kernelSize; j <= kernelSize; j++)
                 {
                     const Word jWord = text[i + j];
+
+                    const auto jFit = _wordOccurences.find(jWord);
 
                     if (j != 0 && jFit != wOEnd)
                     {
