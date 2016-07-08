@@ -11,9 +11,11 @@ struct MostFrequentWords;
 struct WordsOccurences
 {
 
-    WordsOccurences(const MostFrequentWords& mostFrequentWords);
-
     void countWords(const std::vector<Word>& text);
+
+    void keepMostFrequentWords(unsigned toKeep);
+
+    const std::unordered_map<Word, unsigned>& operator() () const;
 
     unsigned _totalCount;
 

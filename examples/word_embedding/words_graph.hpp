@@ -16,7 +16,7 @@ struct WordGraph
         _wordOccurences(wordOccurences),
         _kernelSize(kernelSize)
     {
-        for (const auto& wo : _wordOccurences)
+        for (const auto& wo : _wordOccurences())
         {
             _wordToNodes[wo] = _wordGraph.createNode(wo.first);
         }
@@ -33,22 +33,22 @@ struct WordGraph
                                _wordToNodes[jWord], W(0));
         }
 
-        const auto jFit = _wordOccurences.find(jWord);
+        const auto jFit = _wordOccurences().find(jWord);
 
         const T jWordOcc = T(jFit->second)
         const T jWordFrq = jWordOcc / T(_wordOccurences._totalCount);
 
-        constrexpr auto adder = [] (T lhs, T rhs) { return lhs + rhs; };
+        constrexpr auto subtractor = [] (T lhs, T rhs) { return lhs - rhs; };
 
         _wordGraph.transformEdge(_wordToNodes[iWord],
                                  _wordToNodes[jWord],
-                                 adder,
+                                 subtractor,
                                  _distance(j) * std::log(jWordFreq) / jWordOcc);
     }
 
     void addText(const std::vector<uint32_t>& text)
     {
-        const auto wOEnd = _wordOccurences.end();
+        const auto wOEnd = _wordOccurences().end();
         const unsigned wOTotalCount = _wordOccurences._totalCount;
 
         for (int i = _kernelSize; i < text.size() - _kernelSize; i++)
@@ -63,7 +63,7 @@ struct WordGraph
                 {
                     const Word jWord = text[i + j];
 
-                    const auto jFit = _wordOccurences.find(jWord);
+                    const auto jFit = _wordOccurences().find(jWord);
 
                     if (j != 0 && jFit != wOEnd)
                     {
@@ -79,7 +79,7 @@ struct WordGraph
     {
         for (const auto& node : _wordGraph._nodes)
         {
-            const auto fit = _wordOccurences.find(node->_point);
+            const auto fit = _wordOccurences().find(node->_point);
 
             const T divisor = fit->second;
 

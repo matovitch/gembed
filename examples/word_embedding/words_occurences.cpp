@@ -1,20 +1,11 @@
 #include "words_occurences.hpp"
 
-#include "most_frequent_words.hpp"
+#include "occurence_word.hpp"
 #include "word.hpp"
 
-
-WordsOccurences::WordsOccurences(const MostFrequentWords& mostFrequentWords) :
-    _totalCount(0)
-{
-    for (const auto& fw : mostFrequentWords._data)
-    {
-        const unsigned occurences = fw._occurences;
-
-        _wordsToOccurences[fw._word] = occurences;
-        _totalCount += occurences;
-    }
-}
+#include <algorithm>
+#include <utility>
+#include <vector>
 
 void WordsOccurences::countWords(const std::vector<Word>& text)
 {
@@ -33,4 +24,32 @@ void WordsOccurences::countWords(const std::vector<Word>& text)
             _totalCount++;
         }
     }
+}
+
+void keepMostFrequentWords(unsigned toKeep)
+{
+    std::vector<OccurencesWord> occurenceWords;
+
+    for (const auto& wo : _wordsToOccurences)
+    {
+        occurenceWords.push(OccurencesWord(wo.second, wo.first));
+    }
+
+    std::partial_sort(occurenceWords.begin(),
+                      occurenceWords.begin() + toKeep,
+                      occurenceWords.end());
+
+    occurenceWords.resize(toKeep);
+
+    _wordsToOccurences.clear();
+
+    for (const auto& ow : occurenceWords)
+    {
+        _wordsToOccurences.insert(std::make_pair<Word, unsigned>(ow._word, ow._occurences));
+    }
+}
+
+const std::unordered_map<Word, unsigned>& operator() const
+{
+    return _wordsToOccurences;
 }
