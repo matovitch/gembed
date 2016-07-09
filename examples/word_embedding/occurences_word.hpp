@@ -12,4 +12,4 @@ struct OccurencesWord
     Word _word;
 };
 
-#endif
+#endif // __OCCURENCES_WORD_H__

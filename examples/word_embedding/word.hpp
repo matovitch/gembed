@@ -2,7 +2,10 @@
 #define __WORD_H__
 
 #include <cstddef>
+#include <functional>
 
 typedef uint32_t Word;
 
-#endif
+typedef std::hash<uint32_t> WordHasher;
+
+#endif // __WORD_H__

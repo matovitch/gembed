@@ -9,16 +9,16 @@
 
 template <typename W,
           typename D>
-struct WordGraph
+struct WordsGraph
 {
-    WordGraph(const WordsOccurences& wordOccurences,
-              const unsigned kernelSize) :
+    WordsGraph(const WordsOccurences& wordOccurences,
+               const unsigned kernelSize) :
         _wordOccurences(wordOccurences),
         _kernelSize(kernelSize)
     {
         for (const auto& wo : _wordOccurences())
         {
-            _wordToNodes[wo] = _wordGraph.createNode(wo.first);
+            _wordsToNodes[wo] = _wordsGraph.createNode(wo.first);
         }
     }
 
@@ -26,11 +26,11 @@ struct WordGraph
                     const Word jWord,
                     const unsigned j)
     {
-        if (!_wordGraph.hasEdge(_wordToNodes[iWord],
-                                _wordToNodes[jWord]))
+        if (!_wordsGraph.hasEdge(_wordsToNodes[iWord],
+                                 _wordsToNodes[jWord]))
         {
-            _wordGraph.addEdge(_wordToNodes[iWord],
-                               _wordToNodes[jWord], W(0));
+            _wordsGraph.addEdge(_wordsToNodes[iWord],
+                                _wordsToNodes[jWord], W(0));
         }
 
         const auto jFit = _wordOccurences().find(jWord);
@@ -40,10 +40,10 @@ struct WordGraph
 
         constrexpr auto subtractor = [] (T lhs, T rhs) { return lhs - rhs; };
 
-        _wordGraph.transformEdge(_wordToNodes[iWord],
-                                 _wordToNodes[jWord],
-                                 subtractor,
-                                 _distance(j) * std::log(jWordFreq) / jWordOcc);
+        _wordsGraph.transformEdge(_wordsToNodes[iWord],
+                                  _wordsToNodes[jWord],
+                                  subtractor,
+                                  _distance(j) * std::log(jWordFreq) / jWordOcc);
     }
 
     void addText(const std::vector<uint32_t>& text)
@@ -77,7 +77,7 @@ struct WordGraph
 
     void normalize()
     {
-        for (const auto& node : _wordGraph._nodes)
+        for (const auto& node : _wordsGraph._nodes)
         {
             const auto fit = _wordOccurences().find(node->_point);
 
@@ -87,16 +87,16 @@ struct WordGraph
             {
                 constrexpr auto divider = [] (T lhs, T rhs) { return lhs / rhs; };
 
-                _wordGraph.transformEdge(_wordGraph.toId(node.get()),
-                                         _wordGraph.toId(neighbour.first),
-                                         divider,
-                                         divisor);
+                _wordsGraph.transformEdge(_wordsGraph.toId(node.get()),
+                                          _wordsGraph.toId(neighbour.first),
+                                          divider,
+                                          divisor);
             }
         }
     }
 
-    std::unordered_map<Word, std::size_t>   _wordToNodes;
-    Graph<Word, W, WordHasher>              _wordGraph;
+    std::unordered_map<Word, std::size_t>   _wordsToNodes;
+    Graph<Word, W, WordHasher>              _wordsGraph;
     const WordsOccurences&                  _wordOccurences;
     const unsigned                          _kernelSize;
     D                                       _distance;

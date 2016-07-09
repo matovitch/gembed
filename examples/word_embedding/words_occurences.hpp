@@ -1,12 +1,10 @@
 #ifndef __WORDS_OCCURENCES_H__
 #define __WORDS_OCCURENCES_H__
 
-#include <unordered_map>
-
 #include "word.hpp"
 
-struct MostFrequentWords;
-
+#include <unordered_map>
+#include <vector>
 
 struct WordsOccurences
 {
